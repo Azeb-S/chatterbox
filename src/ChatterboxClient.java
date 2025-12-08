@@ -53,6 +53,9 @@ public class ChatterboxClient {
      * Example:
      * javac src/*.java && java -cp src ChatterboxClient localhost 12345 sharon
      * abc123
+     * 
+     * javac src/*.java && java -cp src ChatterboxClient localhost 12345 sharon
+     * abc123
      *
      * This method is already complete. Your work is in the TODO methods below.
      */
@@ -270,7 +273,26 @@ public class ChatterboxClient {
      * @throws IOException
      */
     public void streamChat() throws IOException {
-        printIncomingChats();
+        // printIncomingChats();
+        // sendOutgoingChats();
+        Thread thread1 = new Thread(() -> {
+            try {
+                printIncomingChats();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        });
+        Thread thread2 = new Thread(() -> {
+            try {
+                sendOutgoingChats();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        });
+        thread1.start();
+        thread2.start();
 
     }
 
@@ -328,13 +350,9 @@ public class ChatterboxClient {
      * print a message to userOutput and exit.
      */
 
-    /***
-     * InputStream inputStream = socket.getInputStream();
-     * InputStreamReader inputStreamReader = new InputStreamReader(inputStream,
-     * java.nio.charset.StandardCharsets.UTF_8);
-     * this.serverReader = new BufferedReader(inputStreamReader);
-     * 
+    /*
      * @throws IOException
+     * 
      * @throws UnknownHostException
      * 
      */
@@ -342,13 +360,9 @@ public class ChatterboxClient {
         // Use the userInput to read, NOT System.in directly
         // loop forever reading user input
         // write to serverOutput
-        Socket socket = new Socket(host, port);
-        socket.getOutputStream();
-        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(userOutput,
-                java.nio.charset.StandardCharsets.UTF_8);
-        this.serverWriter = new BufferedWriter(outputStreamWriter);
+
         String line;
-        while ((line = serverReader.readLine()) != null) {
+        while ((line = userInput.nextLine()) != null) {
             serverWriter.write(line);
             serverWriter.newLine();
             serverWriter.flush();

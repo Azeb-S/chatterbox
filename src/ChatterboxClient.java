@@ -304,12 +304,12 @@ public class ChatterboxClient {
         // Write to userOutput, NOT System.out
         OutputStreamWriter outputStreamWriter = new OutputStreamWriter(userOutput,
                 java.nio.charset.StandardCharsets.UTF_8);
-        this.serverWriter = new BufferedWriter(outputStreamWriter);
+        BufferedWriter nBufferedWriter = new BufferedWriter(outputStreamWriter);
         String line;
         while ((line = serverReader.readLine()) != null) {
-            serverWriter.write(line);
-            serverWriter.newLine();
-            serverWriter.flush();
+            nBufferedWriter.write(line);
+            nBufferedWriter.newLine();
+            nBufferedWriter.flush();
 
         }
 
@@ -342,6 +342,18 @@ public class ChatterboxClient {
         // Use the userInput to read, NOT System.in directly
         // loop forever reading user input
         // write to serverOutput
+        Socket socket = new Socket(host, port);
+        socket.getOutputStream();
+        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(userOutput,
+                java.nio.charset.StandardCharsets.UTF_8);
+        this.serverWriter = new BufferedWriter(outputStreamWriter);
+        String line;
+        while ((line = serverReader.readLine()) != null) {
+            serverWriter.write(line);
+            serverWriter.newLine();
+            serverWriter.flush();
+
+        }
 
     }
 

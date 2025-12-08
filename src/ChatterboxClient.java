@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
@@ -204,15 +205,12 @@ public class ChatterboxClient {
         InputStream inputStream = socket.getInputStream();
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream,
                 java.nio.charset.StandardCharsets.UTF_8);
-        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+        this.serverReader = new BufferedReader(inputStreamReader);
 
         OutputStream outputStream = socket.getOutputStream();
         OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream,
                 java.nio.charset.StandardCharsets.UTF_8);
-        BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
-
-        this.serverReader = bufferedReader;
-        this.serverWriter = bufferedWriter;
+        this.serverWriter = new BufferedWriter(outputStreamWriter);
 
     }
 
@@ -272,8 +270,8 @@ public class ChatterboxClient {
      * @throws IOException
      */
     public void streamChat() throws IOException {
-        throw new UnsupportedOperationException(
-                "Chat streaming not yet implemented. Implement streamChat() and remove this exception!");
+        printIncomingChats();
+
     }
 
     /**
@@ -290,9 +288,31 @@ public class ChatterboxClient {
      * - If an IOException happens, treat it as disconnect:
      * print a message to userOutput and exit.
      */
-    public void printIncomingChats() {
+
+    /***
+     * 
+     * OutputStream outputStream = socket.getOutputStream();
+     * OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream,
+     * java.nio.charset.StandardCharsets.UTF_8);
+     * this.serverWriter = new BufferedWriter(outputStreamWriter);
+     * 
+     * @throws IOException
+     * 
+     */
+    public void printIncomingChats() throws IOException {
         // Listen on serverReader
         // Write to userOutput, NOT System.out
+        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(userOutput,
+                java.nio.charset.StandardCharsets.UTF_8);
+        this.serverWriter = new BufferedWriter(outputStreamWriter);
+        String line;
+        while ((line = serverReader.readLine()) != null) {
+            serverWriter.write(line);
+            serverWriter.newLine();
+            serverWriter.flush();
+
+        }
+
     }
 
     /**
@@ -307,10 +327,22 @@ public class ChatterboxClient {
      * - If writing fails (IOException), the connection is gone:
      * print a message to userOutput and exit.
      */
-    public void sendOutgoingChats() {
+
+    /***
+     * InputStream inputStream = socket.getInputStream();
+     * InputStreamReader inputStreamReader = new InputStreamReader(inputStream,
+     * java.nio.charset.StandardCharsets.UTF_8);
+     * this.serverReader = new BufferedReader(inputStreamReader);
+     * 
+     * @throws IOException
+     * @throws UnknownHostException
+     * 
+     */
+    public void sendOutgoingChats() throws UnknownHostException, IOException {
         // Use the userInput to read, NOT System.in directly
         // loop forever reading user input
         // write to serverOutput
+
     }
 
     public String getHost() {
